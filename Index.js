@@ -50,5 +50,5 @@ const initialQuestions =
             return;
         }
     })
+;
 
-    
