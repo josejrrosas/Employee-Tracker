@@ -3,6 +3,13 @@ require('dotenv').config();
 const mysql = require('mysql2');
 const inquirer = require('inquirer')
 const Sequelize = require('sequelize');
+const express = require('express');
+const cTable = require('console.table');
+const app = express();
+
+// Express middleware
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 
 //------------------------------------------------------------------------------
 //creating a connecting to sql database 
@@ -10,10 +17,10 @@ const Sequelize = require('sequelize');
   // process.env.DB_NAME,
   // process.env.DB_USER,
   // process.env.DB_PASSWORD
-
+  const PORT = process.env.PORT || 3005;
   const db = mysql.createConnection(
     {
-      host: 'localhost',
+    host: 'localhost',
     user: 'root',
     password: 'Luigi100!',
     database: 'business_db'
@@ -23,7 +30,7 @@ const Sequelize = require('sequelize');
 
 //------------------------------------------------------------------------------
 
-const initialQuestions =
+const initialQuestions = () =>{
   inquirer
    .prompt({
       type: 'list',
@@ -75,6 +82,7 @@ const initialQuestions =
         process.exit();
       }
     })
+  }
   ;
 
 //------------------------------------------------------------------------------
@@ -89,10 +97,11 @@ const viewDept = () => {
     if (err) {
       console.log(err);
     }
-    console.log(res);
+    console.table(res);
     start();
   });
 }
+
 
 //------------------------------------------------------------------------------
 
@@ -101,12 +110,12 @@ const viewRoles = () => {
   var query = 
   `
   SELECT * FROM roles;
-  `
+  `;
   db.query(query, function (err, res) {
     if (err) {
       console.log(err);
     }
-    console.log(res);
+    console.table(res);
     start();
   });
 }
@@ -118,12 +127,12 @@ const viewEmps = () => {
   var query = 
   `
   SELECT * FROM employees;
-  `
+  `;
   db.query(query,function(err, res){
     if (err) {
       console.log(err);
     }
-    console.log(res);
+    console.table(res);
     start();
   });
 }
@@ -150,7 +159,7 @@ const addDept = () => {
     if (err) {
       console.log(err);
     }
-    console.log(res);
+    console.table(res);
     start();
     })
   })
@@ -185,7 +194,7 @@ const addRole = () => {
       if (err) {
         console.log(err);
       }
-      console.log(res);
+      console.table(res);
       start();
       })
     })
@@ -249,9 +258,19 @@ const updateEmps = () => {
 //------------------------------------------------------------------------------
 
 const start = () => {
-  initialQuestions;
+  initialQuestions();
 }
 
 //------------------------------------------------------------------------------
 
 start();
+
+
+
+app.use((req, res) => {
+  res.status(404).end();
+});
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
