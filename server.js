@@ -1,40 +1,31 @@
 //getting node packagers
 require('dotenv').config();
-const express = require('express');
 const mysql = require('mysql2');
-//setting port to 3001
-const PORT = process.env.PORT || 8008;
-const app = express();
-//setting data parsing
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
-//creating a connecting to sql database 
-const db = mysql.createConnection(
-  process.env.DB_NAME,
-  process.env.DB_USER,
-  process.env.DB_PASSWORD,
-  process.env.DB_HOST,
-  {
-    host: 'DB_HOST',
-    user: 'DB_USER',
-    password: 'DB_PASS',
-    database: 'DB_NAME'
-  },
-  console.log(`Connected to the buesiness_db database.`)
-);
-//returns a status of 404 if errors out 
-app.use((req, res) => {
-  res.status(404).end();
-});
-//shows that the port is being listened to 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+const inquirer = require('inquirer')
+const Sequelize = require('sequelize');
 
+//------------------------------------------------------------------------------
+//creating a connecting to sql database 
+
+  // process.env.DB_NAME,
+  // process.env.DB_USER,
+  // process.env.DB_PASSWORD
+
+  const db = mysql.createConnection(
+    {
+      host: 'localhost',
+    user: 'root',
+    password: 'Luigi100!',
+    database: 'business_db'
+    },
+    console.log(`Connected to the business_db database.`)
+  );
+
+//------------------------------------------------------------------------------
 
 const initialQuestions =
   inquirer
-    .prompt({
+   .prompt({
       type: 'list',
       name: 'addRole',
       message: 'What would you like to do?',
@@ -85,52 +76,187 @@ const initialQuestions =
     })
   ;
 
+//------------------------------------------------------------------------------
+
 const viewDept = () => {
   console.log("Viewing Departments.");
-  var query = `SELECT * FROM departments;`
+  var query = 
+  `
+  USE business_db
+  SELECT * FROM departments;
+  `
   db.query(query, function (err, res) {
-    if (err) throw err;
-    console.table(res);
+    if (err) {
+      console.log(err);
+    }
+    console.log(res);
     start();
   });
 }
+
+//------------------------------------------------------------------------------
 
 const viewRoles = () => {
   console.log("Viewing all Roles.")
-  var query = `SELECT * FROM departments;`
+  var query = 
+  `
+  USE business_db
+  SELECT * FROM roles;
+  `
   db.query(query, function (err, res) {
-    if (err) throw err;
-    console.table(res);
+    if (err) {
+      console.log(err);
+    }
+    console.log(res);
     start();
   });
 }
 
+//------------------------------------------------------------------------------
+
 const viewEmps = () => {
   console.log("Viewing all Employees.")
-
+  var query = 
+  `
+  USE business_db
+  SELECT * FROM employees;
+  `
+  db.query(query,function(err, res){
+    if (err) {
+      console.log(err);
+    }
+    console.log(res);
+    start();
+  });
 }
+
+//------------------------------------------------------------------------------
 
 const addDept = () => {
-  console.log("Add Department.")
-
+  inquirer
+  .prompt({
+    name: "deptName",
+    type:"input",
+    message: "What is the name of the department that you would like to add?"
+  })
+  .then(response = () => {
+    console.log("Adding Department.")
+    var query = 
+    `
+    USE business_db
+    INSERT INTO department (dept_name) 
+    VALUES (?)
+    `;
+    var deptName = [response.deptName]
+  
+    db.query(query, deptName, function(err, res){
+    if (err) {
+      console.log(err);
+    }
+    console.log(res);
+    start();
+    })
+  })
 }
+
+//------------------------------------------------------------------------------
 
 const addRole = () => {
-  console.log("Adding Role.")
+    inquirer
+    .prompt({
+      name: "roleName",
+      type:"input",
+      message: "What is the name of the role you would like to add?",
 
+      name: "roleSalary",
+      type:"input",
+      message: "What is the name of the role you would like to add?",
+
+      name: "roleDept",
+      type:"input",
+      message: "What is the name of the role you would like to add?"
+    })
+    .then(response = () => {
+      console.log("Adding Role.")
+      `
+      USE business_db
+      INSERT INTO roles (title, salary, department) 
+      VALUES (?)
+      `;
+      var roleResponses = [response.tile, response.salary, response.department]
+    
+      db.query(query, roleResponses, function(err, res){
+      if (err) {
+        console.log(err);
+      }
+      console.log(res);
+      start();
+      })
+    })
 }
+
+//------------------------------------------------------------------------------
 
 const addEmps = () => {
-  console.log("Adding Employee.")
+  inquirer
+  .prompt({
+    name: "empFirstName",
+    type:"input",
+    message: "What is the employees first name?",
+
+    name: "empLastName",
+    type:"input",
+    message: "What is the employees last name?",
+
+    name: "empRole",
+    type:"input",
+    message: "What is the role of the employee?",
+    
+    name: "empManager",
+    type:"list",
+    message: "does the employee have a manager?",
+    choice: ["yes", "no"]
+  })
+  .then(response = () => {
+    if (response.empManager === "yes"){
+      //select manager from list
+    }
+    else{
+      response.empManager = null;
+    }
+  })
+  .then(response = () => {
+    console.log("Adding Employee.")
+    `
+    USE business_db
+    INSERT INTO employees (firstName, lastName, role, manager) 
+    VALUES (?), [answer.firstName, answer.lastName, answer.role, answer.manager]
+    `;
+    var roleResponses = [response.tile, response.salary, response.department]
+  
+    db.query(query, roleResponses, function(err, res){
+    if (err) {
+      console.log(err);
+    }
+    console.log(res);
+    start();
+    })
+  })
 }
+
+//------------------------------------------------------------------------------
 
 const updateEmps = () => {
   console.log("Updating Employee.")
 
 }
 
+//------------------------------------------------------------------------------
+
 const start = () => {
-  initialQuestions();
+  initialQuestions;
 }
+
+//------------------------------------------------------------------------------
 
 start();
