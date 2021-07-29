@@ -41,35 +41,36 @@ const initialQuestions =
       ],
     })
     .then(answer => {
-      if (answer === 'View all departments') {
-        viewDept;
+      if (answer.addRole === 'View all departments') {
+        viewDept();
       }
 
-      else if (answer === 'View all Roles') {
-        viewRoles;
+      else if (answer.addRole === 'View all Roles') {
+        viewRoles();
       }
 
-      else if (answer === 'View all employees') {
-        viewEmps;
+      else if (answer.addRole === 'View all employees') {
+        viewEmps();
       }
 
-      else if (answer === 'Add a department') {
-        addDept;
+      else if (answer.addRole === 'Add a department') {
+        addDept();
       }
 
-      else if (answer === 'Add a role') {
-        addRole;
+      else if (answer.addRole === 'Add a role') {
+        addRole();
       }
 
-      else if (answer === 'Add an employee') {
-        addEmps;
+      else if (answer.addRole === 'Add an employee') {
+        addEmps();
       }
 
-      else if (answer === 'Update an employee role') {
-        updateEmps;
+      else if (answer.addRole === 'Update an employee role') {
+        updateEmps();
       }
 
       else {
+        console.log('end');
         db.end();
         process.exit();
       }
@@ -82,7 +83,6 @@ const viewDept = () => {
   console.log("Viewing Departments.");
   var query = 
   `
-  USE business_db
   SELECT * FROM departments;
   `
   db.query(query, function (err, res) {
@@ -100,7 +100,6 @@ const viewRoles = () => {
   console.log("Viewing all Roles.")
   var query = 
   `
-  USE business_db
   SELECT * FROM roles;
   `
   db.query(query, function (err, res) {
@@ -118,7 +117,6 @@ const viewEmps = () => {
   console.log("Viewing all Employees.")
   var query = 
   `
-  USE business_db
   SELECT * FROM employees;
   `
   db.query(query,function(err, res){
@@ -143,7 +141,6 @@ const addDept = () => {
     console.log("Adding Department.")
     var query = 
     `
-    USE business_db
     INSERT INTO department (dept_name) 
     VALUES (?)
     `;
@@ -179,7 +176,6 @@ const addRole = () => {
     .then(response = () => {
       console.log("Adding Role.")
       `
-      USE business_db
       INSERT INTO roles (title, salary, department) 
       VALUES (?)
       `;
@@ -228,7 +224,6 @@ const addEmps = () => {
   .then(response = () => {
     console.log("Adding Employee.")
     `
-    USE business_db
     INSERT INTO employees (firstName, lastName, role, manager) 
     VALUES (?), [answer.firstName, answer.lastName, answer.role, answer.manager]
     `;
