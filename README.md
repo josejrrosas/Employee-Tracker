@@ -25,6 +25,7 @@ In the terminal, run:
 
 npm install inquirer 
 npm install mySQL2 
+npm install console.table
 
 
 --------------------------------------------------------------------------
@@ -38,8 +39,7 @@ Any suggestions are welcome. Feel free to make a pull request and I will review 
 Github Repository: https://github.com/josejrrosas/Employee-Tracker
 
 Link to demonstration video :
-
-
+https://drive.google.com/file/d/1naqFlAJ7P55JsSr7uYuXYvNOJqLLoEIZ/view
 --------------------------------------------------------------------------
 
 ## Technologies-Used:
