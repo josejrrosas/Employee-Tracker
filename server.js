@@ -151,7 +151,7 @@ const addDept = () => {
     var query = 
     `
     INSERT INTO department (dept_name) 
-    VALUES (?)
+    VALUES (?),
     `;
     var deptName = [response.deptName]
   
@@ -186,9 +186,9 @@ const addRole = () => {
       console.log("Adding Role.")
       `
       INSERT INTO roles (title, salary, department) 
-      VALUES (?)
+      VALUES (?),
       `;
-      var roleResponses = [response.tile, response.salary, response.department]
+      var roleResponses = [response.roleName, response.roleSalary, response.roleDept]
     
       db.query(query, roleResponses, function(err, res){
       if (err) {
@@ -234,15 +234,15 @@ const addEmps = () => {
     console.log("Adding Employee.")
     `
     INSERT INTO employees (firstName, lastName, role, manager) 
-    VALUES (?), [answer.firstName, answer.lastName, answer.role, answer.manager]
+    VALUES (?),
     `;
-    var roleResponses = [response.tile, response.salary, response.department]
+    var empResponses = [response.empFirstName, response.empLastName, response.empRole, response.empManager]
   
-    db.query(query, roleResponses, function(err, res){
+    db.query(query, empResponses, function(err, res){
     if (err) {
       console.log(err);
     }
-    console.log(res);
+    console.table(res);
     start();
     })
   })
@@ -266,6 +266,7 @@ const start = () => {
 start();
 
 
+//------------------------------------------------------------------------------
 
 app.use((req, res) => {
   res.status(404).end();
